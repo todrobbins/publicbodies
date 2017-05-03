@@ -5,9 +5,9 @@ import csv
 import os
 
 '''
-Script for importing the open data on italian public bodies in 
+Script for importing the open data on italian public bodies in
 okfn/publibodies database
-''' 
+'''
 
 #Script parameters
 #Acronyms used: ipa -> indicePa , pbo -> publicbodies.org
@@ -18,12 +18,12 @@ IPA_URL = "http://www.indicepa.gov.it/public-services/opendata-read-service.php?
 not_wanted_categories = ["Istituti di Istruzione Statale di Ogni Ordine e Grado"];
 
 #path to publicbodies repository root
-PBO_PATH = "../"
+PBO_PATH = "../../"
 
 #name of the output file
 PBO_FILENAME = PBO_PATH + "data/it.csv"
 
-#Name of the temporary file downloaded 
+#Name of the temporary file downloaded
 IPA_FILENAME = "amministrazioni.txt"
 
 
@@ -39,7 +39,7 @@ def download_indicepa():
     output.write(file_req.read())
     output.close()
     print("indicePA data saved")
-    
+
 def convert_data():
     print("Converting data to publicbodies csv file")
     pbo_writer = csv.DictWriter(open(PBO_FILENAME, 'w', newline=''), fieldnames=pbo_fieldnames, delimiter=',')
@@ -53,17 +53,17 @@ def convert_data():
             for key in ipa_row.keys():
                 if ipa_row[key] == "null":
                     ipa_row[key] = ""
-            
+
             #preprocessing
             if ipa_row["tipologia_istat"] in not_wanted_categories:
                 continue
-            
+
             #cleaning ulrs
             ipa_row["sito_istituzionale"] = ipa_row["sito_istituzionale"].replace(",",".")
             if ipa_row["sito_istituzionale"] != "" and ipa_row["sito_istituzionale"][0:7] != "http://":
                 ipa_row["sito_istituzionale"] = "http://" + ipa_row["sito_istituzionale"]
-                
-            
+
+
             pbo_row = {}
             #print("Saving PB " + ipa_row["cod_amm"])
             pbo_row["id"] = "it/" + ipa_row["cod_amm"]
@@ -79,17 +79,17 @@ def convert_data():
             pbo_row["url"] = ipa_row["sito_istituzionale"]
             pbo_row["jurisdiction_code"] = "IT"
             pbo_row["email"] =  ipa_row["mail1"]
-            pbo_row["address"] = ipa_row["Indirizzo"].replace(","," ") + " - " + ipa_row["Cap"] + " " + ipa_row["Comune"] + " (" + ipa_row["Provincia"] + ") " + "Italy" 
+            pbo_row["address"] = ipa_row["Indirizzo"].replace(","," ") + " - " + ipa_row["Cap"] + " " + ipa_row["Comune"] + " (" + ipa_row["Provincia"] + ") " + "Italy"
             pbo_row["contact"] = ""
             pbo_row["tags"] = ""
             pbo_row["source_url"] = "http://www.indicepa.gov.it/ricerca/dettaglioamministrazione.php?cod_amm=" + ipa_row["cod_amm"]
-                       
+
             #write row
             pbo_writer.writerow(pbo_row)
-    
+
     print("File " + PBO_FILENAME + " created")
-    
-    #Remove indicepa file 
+
+    #Remove indicepa file
     os.remove(IPA_FILENAME)
     print("File " + IPA_FILENAME + " removed")
 
