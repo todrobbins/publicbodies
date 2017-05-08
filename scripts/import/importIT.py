@@ -82,8 +82,13 @@ def convert_data():
             pbo_row["address"] = ipa_row["Indirizzo"].replace(","," ") + " - " + ipa_row["Cap"] + " " + ipa_row["Comune"] + " (" + ipa_row["Provincia"] + ") " + "Italy"
             pbo_row["contact"] = ""
             pbo_row["tags"] = ""
+<<<<<<< HEAD:scripts/import/importIT.py
             pbo_row["source_url"] = "http://www.indicepa.gov.it/ricerca/dettaglioamministrazione.php?cod_amm=" + ipa_row["cod_amm"]
 
+=======
+            pbo_row["source_url"] = "http://www.indicepa.gov.it/ricerca/n-dettaglioamministrazione.php?cod_amm=" + ipa_row["cod_amm"]
+                       
+>>>>>>> okfn/master:scripts/importIT.py
             #write row
             pbo_writer.writerow(pbo_row)
 
